@@ -1,0 +1,75 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    platform: linux/arm64/v8
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  product-management:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+      - SERVICE_NAME=product-management
+    networks:
+      - ecommerce-net
+    restart: unless-stopped
+
+  order-management:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      inventory-management:
+        condition: service_started
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+      - INVENTORY_API=http://inventory-management:8080
+      - SERVICE_NAME=order-management
+    networks:
+      - ecommerce-net
+    restart: unless-stopped
+
+  inventory-management:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017
+      - SERVICE_NAME=inventory-management
+    networks:
+      - ecommerce-net
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  ecommerce-net:
+    driver: bridge

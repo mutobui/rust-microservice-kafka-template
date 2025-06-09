@@ -1,0 +1,13 @@
+[package]
+name = "inventory-management"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+rdkafka = { workspace = true }
+mongodb = { workspace = true }
+tokio = { workspace = true }
+models = { path = "../models" }
