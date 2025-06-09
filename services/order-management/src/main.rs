@@ -97,7 +97,7 @@ async fn main() -> std::io::Result<()> {
     });
 
     HttpServer::new(move || App::new().app_data(state.clone()).service(create_order))
-        .bind(("0.0.0.0", 8083))?
+        .bind(("0.0.0.0", 8082))?
         .run()
         .await
 }

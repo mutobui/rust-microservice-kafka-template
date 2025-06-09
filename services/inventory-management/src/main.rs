@@ -85,7 +85,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(state.clone())
             .service(update_stock)
     })
-    .bind(("0.0.0.0", 8082))?
+    .bind(("0.0.0.0", 8083))?
     .run()
     .await
 }

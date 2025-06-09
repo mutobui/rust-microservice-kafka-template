@@ -1,5 +1,5 @@
 use actix_web::{post, get, web, App, HttpResponse, HttpServer};
-use mongodb::{bson::doc, Client, Collection};
+use mongodb::{Client, Collection};
 use rdkafka::config::ClientConfig;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use serde_json::json;
@@ -81,7 +81,7 @@ async fn main() -> std::io::Result<()> {
             .service(create_product)
             .service(get_products)
     })
-    .bind(("0.0.0.0", 8081))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }
